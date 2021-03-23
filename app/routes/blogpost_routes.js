@@ -20,7 +20,7 @@ const router = express.Router()
 // CREATE
 // POST
 router.post('/blogposts', requireToken, (req, res, next) => {
-  // set owner of new example to be current user
+  // set author of new example to be current user
   console.log('The user object:', req.user)
   console.log('The incoming event data:', req.body)
   const postData = req.body.blogpost
@@ -37,6 +37,14 @@ router.post('/blogposts', requireToken, (req, res, next) => {
     .catch(next)
 })
 
+// Show
+// Get
+router.get('/blogposts/:id', (req, res, next) => {
+  BlogPost.findById(req.params.id)
+    .then(handle404)
+    .then(blogpost => res.status(200).json({ blogpost: blogpost.toObject() }))
+    .catch(next)
+})
 // INDEX
 // GET
 router.get('/blogposts', (req, res, next) => {
@@ -46,6 +54,25 @@ router.get('/blogposts', (req, res, next) => {
     })
     // respond with status 200 and JSON of the examples
     .then(blogposts => res.status(200).json({ blogposts: blogposts }))
+    // if an error occurs, pass it to the handler
+
+    .catch(next)
+})
+// UPDATE
+// PATCH
+router.patch('/blogposts/:id', requireToken, removeBlanks, (req, res, next) => {
+  delete req.body.blogpost.author
+  BlogPost.findById(req.params.id)
+    .then(handle404)
+    .then(blogpost => {
+      // pass the `req` object and the Mongoose record to `requireOwnership`
+      // it will throw an error if the current user isn't the owner
+      requireOwnership(req, blogpost)
+      // pass the result of Mongoose's `.update` to the next `.then`
+      return blogpost.updateOne(req.body.blogpost)
+    })
+    // if that succeeded, return 204 and no JSON
+    .then(() => res.sendStatus(204))
     // if an error occurs, pass it to the handler
     .catch(next)
 })
