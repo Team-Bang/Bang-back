@@ -37,4 +37,13 @@ router.post('/blogposts', requireToken, (req, res, next) => {
     .catch(next)
 })
 
+// Show
+// Get
+router.get('/blogposts/:id', (req, res, next) => {
+  BlogPost.findById(req.params.id)
+    .then(handle404)
+    .then(blogpost => res.status(200).json({ blogpost: blogpost.toObject() }))
+    .catch(next)
+})
+
 module.exports = router
