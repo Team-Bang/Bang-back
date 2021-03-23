@@ -37,6 +37,14 @@ router.post('/blogposts', requireToken, (req, res, next) => {
     .catch(next)
 })
 
+// Show
+// Get
+router.get('/blogposts/:id', (req, res, next) => {
+  BlogPost.findById(req.params.id)
+    .then(handle404)
+    .then(blogpost => res.status(200).json({ blogpost: blogpost.toObject() }))
+    .catch(next)
+})
 // INDEX
 // GET
 router.get('/blogposts', (req, res, next) => {
@@ -47,6 +55,7 @@ router.get('/blogposts', (req, res, next) => {
     // respond with status 200 and JSON of the examples
     .then(blogposts => res.status(200).json({ blogposts: blogposts }))
     // if an error occurs, pass it to the handler
+
     .catch(next)
 })
 
