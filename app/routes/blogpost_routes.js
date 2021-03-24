@@ -52,7 +52,7 @@ router.get('/blogposts', (req, res, next) => {
     .then(blogposts => {
       return blogposts.map(blogpost => blogpost.toObject())
     })
-    // respond with status 200 and JSON of the examples
+    // respond with status 200 and JSON of the blogposts
     .then(blogposts => res.status(200).json({ blogposts: blogposts }))
     // if an error occurs, pass it to the handler
 
@@ -72,6 +72,23 @@ router.patch('/blogposts/:id', requireToken, removeBlanks, (req, res, next) => {
       return blogpost.updateOne(req.body.blogpost)
     })
     // if that succeeded, return 204 and no JSON
+    .then(() => res.sendStatus(204))
+    // if an error occurs, pass it to the handler
+    .catch(next)
+})
+
+// DESTROY
+// DELETE /blogposts/5a7db6c74d55bc51bdf39793
+router.delete('/blogposts/:id', requireToken, (req, res, next) => {
+  BlogPost.findById(req.params.id)
+    .then(handle404)
+    .then(blogpost => {
+      // throw an error if current user doesn't own `example`
+      requireOwnership(req, blogpost)
+      // delete the example ONLY IF the above didn't throw
+      blogpost.deleteOne()
+    })
+    // send back 204 and no content if the deletion succeeded
     .then(() => res.sendStatus(204))
     // if an error occurs, pass it to the handler
     .catch(next)
