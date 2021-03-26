@@ -6,7 +6,7 @@ const passport = require('passport')
 const requireToken = passport.authenticate('bearer', { session: false })
 
 // Create comment
-router.post('/blogposts/:id/comments', requireToken, (req, res, next) => {
+router.post('/blogposts/:id', requireToken, (req, res, next) => {
   const commentData = req.body.comment
   const postId = req.params.id
   BlogPost.findById(postId)
