@@ -11,11 +11,11 @@ router.post('/blogposts/:id/comments', requireToken, (req, res, next) => {
   const postId = req.params.id
   BlogPost.findById(postId)
     .then(handle404)
-    .then(trip => {
-      trip.comments.push(commentData)
-      return trip.save()
+    .then(blogpost => {
+      blogpost.comments.push(commentData)
+      return blogpost.save()
     })
-    .then(trip => res.status(201).json({ trip }))
+    .then(blogpost => res.status(201).json({ blogpost }))
     .catch(next)
 })
 
