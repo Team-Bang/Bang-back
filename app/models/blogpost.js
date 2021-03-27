@@ -10,6 +10,10 @@ const blogPostSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  authorName: {
+    type: String,
+    required: true
+  },
   date: {
     type: Date,
     default: Date.now
