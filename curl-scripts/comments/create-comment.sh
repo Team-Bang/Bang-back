@@ -1,4 +1,4 @@
-curl "http://localhost:4741/blogposts/${ID}" \
+curl "http://localhost:4741/blogposts/${ID}/comments" \
   --include \
   --request POST \
   --header "Authorization: Bearer ${TOKEN}" \

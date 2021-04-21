@@ -25,6 +25,7 @@ router.post('/blogposts', requireToken, (req, res, next) => {
   console.log('The incoming event data:', req.body)
   const postData = req.body.blogpost
   postData.author = req.user._id
+  postData.username = req.user.username
 
   BlogPost.create(postData)
     // respond to succesful `create` with status 201 and JSON of new "example"
